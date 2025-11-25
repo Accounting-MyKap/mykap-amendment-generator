@@ -1,0 +1,7 @@
+{
+    "buildCommand": "npm run build",
+    "framework": "vite",
+    "nodejs": {
+        "version": "18.x"
+    }
+}
