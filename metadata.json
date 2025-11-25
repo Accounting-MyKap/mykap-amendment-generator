@@ -1,0 +1,5 @@
+{
+  "name": "MyKap PDF Generator",
+  "description": "A professional PDF generation tool for financial amendments, allowing Excel data integration, custom templates, and dynamic table generation.",
+  "requestFramePermissions": []
+}
