@@ -26,7 +26,6 @@ export const fetchTemplates = async (): Promise<Template[]> => {
 };
 
 export const saveTemplate = async (template: Template) => {
-    // Check if exists to update or insert
     const { data: existing } = await supabase
         .from('templates')
         .select('id')
@@ -100,44 +99,32 @@ export const deleteMergeField = async (id: string) => {
 export const uploadLetterhead = async (file: File): Promise<string | null> => {
     const fileName = `letterhead-${Date.now()}`;
 
-    console.log('[uploadLetterhead] Starting upload:', fileName);
-
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
         .from('assets')
         .upload(fileName, file);
 
     if (error) {
         console.error('[uploadLetterhead] Storage upload error:', error);
-        alert(`Error subiendo el archivo: ${error.message}`);
-        return null;
+        throw new Error(`Error subiendo el archivo: ${error.message}`);
     }
-
-    console.log('[uploadLetterhead] Upload successful:', data);
 
     const { data: { publicUrl } } = supabase.storage
         .from('assets')
         .getPublicUrl(fileName);
 
-    console.log('[uploadLetterhead] Public URL:', publicUrl);
-
-    // Save URL to app_settings table
     const { error: upsertError } = await supabase
         .from('app_settings')
         .upsert({ key: 'letterhead_url', value: publicUrl });
 
     if (upsertError) {
         console.error('[uploadLetterhead] Error saving to app_settings:', upsertError);
-        alert(`Error guardando la URL: ${upsertError.message}`);
-        return null;
+        throw new Error(`Error guardando la URL: ${upsertError.message}`);
     }
 
-    console.log('[uploadLetterhead] Successfully saved to app_settings');
     return publicUrl;
 };
 
 export const fetchLetterheadUrl = async (): Promise<string | null> => {
-    console.log('[fetchLetterheadUrl] Fetching letterhead URL...');
-
     const { data, error } = await supabase
         .from('app_settings')
         .select('value')
@@ -149,11 +136,5 @@ export const fetchLetterheadUrl = async (): Promise<string | null> => {
         return null;
     }
 
-    if (!data) {
-        console.log('[fetchLetterheadUrl] No letterhead found');
-        return null;
-    }
-
-    console.log('[fetchLetterheadUrl] Letterhead URL:', data.value);
-    return data.value;
+    return data?.value ?? null;
 };

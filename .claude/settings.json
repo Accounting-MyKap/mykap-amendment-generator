@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/Users/Usuario/Downloads/Otros/generador-de-term-sheets/**)",
+      "Bash(npm install:*)",
+      "Bash(npm run build:*)",
+      "Bash(node -e:*)",
+      "Bash(else echo \".env.local does NOT exist\")",
+      "Bash(fi)"
+    ]
+  }
+}

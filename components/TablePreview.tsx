@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { FileSpreadsheet } from 'lucide-react';
 import { ExcelRow, ColumnConfig } from '../types';
 import { formatCurrency, formatPercent, formatDate } from '../services/pdfService';
 
@@ -20,8 +21,14 @@ export const TablePreview: React.FC<TablePreviewProps> = ({
 
   if (data.length === 0) {
     return (
-      <div className="text-center py-10 border-2 border-dashed border-slate-200 rounded-lg bg-slate-50 text-slate-500">
-        No data to display. Please upload an Excel file.
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+          <FileSpreadsheet size={28} className="text-slate-400" />
+        </div>
+        <h4 className="text-sm font-semibold text-slate-700 mb-1">Sin datos cargados</h4>
+        <p className="text-xs text-slate-400 max-w-xs">
+          Sube un archivo Excel (.xlsx) usando el área de carga para ver la vista previa aquí.
+        </p>
       </div>
     );
   }
@@ -42,7 +49,7 @@ export const TablePreview: React.FC<TablePreviewProps> = ({
   return (
     <div className="overflow-x-auto rounded-md bg-white">
       <table className="w-full text-sm text-left">
-        <thead className="text-xs text-white uppercase bg-blue-600">
+        <thead className="text-xs text-white uppercase bg-blue-700">
           <tr>
             <th className="px-4 py-3 w-10">#</th>
             {visibleColumns.map((col) => (
@@ -54,9 +61,13 @@ export const TablePreview: React.FC<TablePreviewProps> = ({
         </thead>
         <tbody>
           {data.map((row, index) => (
-            <tr 
-              key={index} 
-              className={`border-b border-slate-100 hover:bg-slate-50 ${highlightedRows.has(index) ? 'bg-yellow-50' : ''}`}
+            <tr
+              key={index}
+              className={`border-b border-slate-100 cursor-pointer transition-colors border-l-2
+                ${highlightedRows.has(index)
+                  ? 'bg-amber-50 border-l-amber-400'
+                  : 'hover:bg-slate-50 border-l-transparent'}`}
+              onClick={() => onToggleHighlight(index)}
             >
               <td className="px-4 py-3 text-center">
                 <input
